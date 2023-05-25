@@ -4,7 +4,6 @@ Copyright © 2023 Ilia Batii
 package cmd
 
 import (
-	"fmt"
 	"io"
 	"os"
 
@@ -12,29 +11,21 @@ import (
 )
 
 var (
-	data          string
+	data string
+
 	validateInput = func(cmd *cobra.Command, args []string) error {
-		res, err := os.Stdin.Stat()
-		if err != nil {
-			return err
-		}
+		var inputReader io.Reader = cmd.InOrStdin()
 
-		if res.Size() > 0 {
-			var inputReader io.Reader = cmd.InOrStdin()
+		fi, _ := os.Stdin.Stat()
 
+		if (fi.Mode() & os.ModeNamedPipe) != 0 {
 			inputBytes, err := io.ReadAll(inputReader)
-			if err != nil {
-				return err
-			}
-
-			if len(inputBytes) > 0 {
+			if err == nil && len(inputBytes) > 0 {
 				// pipe input has a trailing newline
 
 				data = string(removeTrainlingNewline(inputBytes))
 				args = append(args, data)
 			}
-		} else {
-			fmt.Println("No pipe input")
 		}
 
 		if err := cobra.ExactArgs(1)(cmd, args); err != nil {

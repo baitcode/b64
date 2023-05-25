@@ -4,6 +4,9 @@ Copyright © 2023 Ilia Batii
 package cmd
 
 import (
+	"os"
+	"time"
+
 	"encoding/base64"
 
 	"github.com/spf13/cobra"
@@ -22,7 +25,9 @@ var decodeCmd = &cobra.Command{
 			return
 		}
 		decoded = append(decoded, '\n')
+		cmd.SetOut(os.Stdout)
 		cmd.OutOrStdout().Write(decoded)
+		time.Sleep(100 * time.Millisecond)
 	},
 }
 
