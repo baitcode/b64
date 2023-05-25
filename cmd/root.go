@@ -1,0 +1,83 @@
+/*
+Copyright © 2023 Ilia Batii
+*/
+package cmd
+
+import (
+	"fmt"
+	"io"
+	"os"
+
+	"github.com/spf13/cobra"
+)
+
+var (
+	data          string
+	validateInput = func(cmd *cobra.Command, args []string) error {
+		res, err := os.Stdin.Stat()
+		if err != nil {
+			return err
+		}
+
+		if res.Size() > 0 {
+			var inputReader io.Reader = cmd.InOrStdin()
+
+			inputBytes, err := io.ReadAll(inputReader)
+			if err != nil {
+				return err
+			}
+
+			if len(inputBytes) > 0 {
+				// pipe input has a trailing newline
+
+				data = string(removeTrainlingNewline(inputBytes))
+				args = append(args, data)
+			}
+		} else {
+			fmt.Println("No pipe input")
+		}
+
+		if err := cobra.ExactArgs(1)(cmd, args); err != nil {
+			return err
+		}
+
+		data = args[0]
+		return nil
+	}
+)
+
+// rootCmd represents the base command when called without any subcommands
+var rootCmd = &cobra.Command{
+	Use:   "b64",
+	Short: "A brief description of your application",
+	Long: `A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	// Uncomment the following line if your bare application
+	// has an action associated with it:
+	// Run: func(cmd *cobra.Command, args []string) { },
+}
+
+// Execute adds all child commands to the root command and sets flags appropriately.
+// This is called by main.main(). It only needs to happen once to the rootCmd.
+func Execute() {
+	err := rootCmd.Execute()
+	if err != nil {
+		os.Exit(1)
+	}
+}
+
+func init() {
+	// Here you will define your flags and configuration settings.
+	// Cobra supports persistent flags, which, if defined here,
+	// will be global for your application.
+
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.b64.yaml)")
+
+	// Cobra also supports local flags, which will only run
+	// when this action is called directly.
+	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
