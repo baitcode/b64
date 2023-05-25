@@ -4,11 +4,15 @@ Cli tool written with Golang to perform b64 encryption and decryption. Nothing s
 
 Feel free to open issues or any other way of initiating conversations
 
-# Usage
+# Installation
 
 ```bash
 go install github.com/baitcode/b64
 ```
+
+or go to release page and download binary that fits your environment. If you can't find environment you need, please open Issue.
+
+# Usage
 
 ## Encode:
 
