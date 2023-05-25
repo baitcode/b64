@@ -14,15 +14,15 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - run: go build . -o b64w386
+      - run: go build -o b64w386 .
         env:
           GOOS: "windows"
           GOARCH: "386"
-      - run: go build . -o b64warm
+      - run: go build -o b64warm .
         env:
           GOOS: "windows"
           GOARCH: "arm"
-      - run: go build . -o b64warm64
+      - run: go build -o b64warm64 .
         env:
           GOOS: "windows"
           GOARCH: "arm64"
