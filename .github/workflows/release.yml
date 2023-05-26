@@ -14,19 +14,23 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - run: go build -o b64-win-386 .
+      - run: go build -o b64-win-386.exe .
         env:
           GOOS: "windows"
           GOARCH: "386"
-      - run: go build -o b64-win-arm .
+      - run: go build -o b64-win-arm.exe .
         env:
           GOOS: "windows"
           GOARCH: "arm"
-      - run: go build -o b64-win-arm64 .
+      - run: go build -o b64-win-arm64.exe .
         env:
           GOOS: "windows"
           GOARCH: "arm64"
-
+      - run: go build -o b64-win-amd64.exe .
+        env:
+          GOOS: "windows"
+          GOARCH: "amd64"
+  
       - run: go build -o b64-lin-386 .
         env:
           GOOS: "linux"
@@ -48,14 +52,19 @@ jobs:
         env:
           GOOS: "darwin"
           GOARCH: "amd64"
-            
+      - run: chmod +x b64-*
+        env:
+          GOOS: "darwin"
+          GOARCH: "amd64"
+              
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            b64-win-386
-            b64-win-arm
-            b64-win-arm64
+            b64-win-386.exe
+            b64-win-arm.exe
+            b64-win-arm64.exe
+            b64-win-amd64.exe
             b64-lin-386
             b64-lin-arm
             b64-lin-arm64
